@@ -1,0 +1,15 @@
+version: "3"
+
+networks:
+  app-tier:
+    driver: bridge
+
+
+services:
+  
+  accouting:
+    image: xnxn/service:latest
+    ports:
+      - "8181:8181"
+    networks:
+      - app-tier

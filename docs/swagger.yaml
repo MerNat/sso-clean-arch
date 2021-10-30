@@ -1,0 +1,93 @@
+definitions:
+  json.GenericResponse:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  models.User:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /sso/login:
+    post:
+      consumes:
+      - application/json
+      description: Login
+      parameters:
+      - description: Users Data
+        in: body
+        name: user
+        required: true
+        schema:
+          allOf:
+          - $ref: '#/definitions/models.User'
+          - properties:
+              email:
+                type: string
+              password:
+                type: string
+            type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            allOf:
+            - $ref: '#/definitions/json.GenericResponse'
+            - properties:
+                code:
+                  type: integer
+                message:
+                  type: string
+                success:
+                  type: boolean
+              type: object
+      summary: Login to service
+      tags:
+      - SSO
+  /sso/register:
+    post:
+      consumes:
+      - application/json
+      description: Creating a User
+      parameters:
+      - description: Users Data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            allOf:
+            - $ref: '#/definitions/json.GenericResponse'
+            - properties:
+                code:
+                  type: integer
+                message:
+                  type: string
+                success:
+                  type: boolean
+              type: object
+      summary: Create a user
+      tags:
+      - SSO
+swagger: "2.0"

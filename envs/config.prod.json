@@ -1,0 +1,5 @@
+{
+  "restfulapi_endpoint": "0.0.0.0:8181",
+  "jwt_secret": "some-secret-key-for-private-key"
+
+}

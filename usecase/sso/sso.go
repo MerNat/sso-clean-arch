@@ -12,30 +12,29 @@ import (
 )
 
 type serviceLayer struct {
-	service Service
+	repo models.Repository
 }
 
-func NewService(service Service) Service {
+func NewService(repo models.Repository) Service {
 	return &serviceLayer{
-		service: service,
+		repo: repo,
 	}
 }
 
-func (s *serviceLayer) RegistrationService(user models.User) (err error) {
+func (s *serviceLayer) RegistrationService(user *models.User) (err error) {
 
-	err = user.CreateUser()
-
+	err = s.repo.CreateUser(user)
 	return
 }
 
-func (s *serviceLayer) AuthService(user models.User) (token string, err error) {
+func (s *serviceLayer) AuthService(user *models.User) (token string, err error) {
 	password := user.Password
 	if password == "" {
 		err = errors.New("invalid credentials")
 		return
 	}
 
-	err = user.GetUser()
+	err = s.repo.GetUser(user)
 
 	if err != nil {
 		err = errors.New("email not found")

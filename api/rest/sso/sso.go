@@ -45,7 +45,7 @@ func (f *eventServiceHandler) RegistrationHandler(w http.ResponseWriter, r *http
 		return
 	}
 
-	err = f.service.RegistrationService(*user)
+	err = f.service.RegistrationService(user)
 
 	if err != nil {
 		serializer.JSON(w, http.StatusBadRequest, &serializer.GenericResponse{
@@ -74,7 +74,6 @@ func (f *eventServiceHandler) VerifyToken(w http.ResponseWriter, r *http.Request
 
 }
 
-
 // LoginHandler godoc
 // @Summary Login to service
 // @Description Login
@@ -99,7 +98,7 @@ func (f *eventServiceHandler) LoginHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	token, err := f.service.AuthService(*user)
+	token, err := f.service.AuthService(user)
 
 	if err != nil {
 		serializer.JSON(w, http.StatusBadRequest, &serializer.GenericResponse{

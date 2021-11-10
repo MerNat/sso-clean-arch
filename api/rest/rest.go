@@ -6,6 +6,7 @@ import (
 	"github.com/mernat/sso-clean-arch/api/middleware"
 	sso "github.com/mernat/sso-clean-arch/api/rest/sso"
 	_ "github.com/mernat/sso-clean-arch/docs"
+	"github.com/mernat/sso-clean-arch/models"
 	ssoUseCase "github.com/mernat/sso-clean-arch/usecase/sso"
 
 	"github.com/gorilla/mux"
@@ -29,8 +30,9 @@ import (
 // @BasePath /
 // @schemes http
 func ServeAPI(endpoint string) error {
-	var ssoInterface ssoUseCase.Service
-	ssoService := ssoUseCase.NewService(ssoInterface)
+
+	ssoRepo := models.NewSQLiteRepository()
+	ssoService := ssoUseCase.NewService(ssoRepo)
 	ssoHandler := sso.NewSSOServiceHandler(ssoService)
 
 	r := mux.NewRouter()

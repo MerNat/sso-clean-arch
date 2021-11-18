@@ -4,11 +4,61 @@ networks:
   app-tier:
     driver: bridge
 
+volumes:
+  elasticsearch-data:
 
 services:
+  apm-server:
+   container_name: apm-server
+   image: docker.elastic.co/apm/apm-server:7.13.0
+   ports:
+    - 8200:8200
+   depends_on:
+     - elasticsearch
+     - kibana
+   networks:
+    - app-tier 
+   command: >
+     apm-server -e
+       -E apm-server.rum.enabled=true
+       -E setup.kibana.host=kibana:5601
+       -E setup.template.settings.index.number_of_replicas=0
+       -E apm-server.kibana.enabled=true
+       -E apm-server.kibana.host=kibana:5601
+       -E output.elasticsearch.hosts=["elasticsearch:9200"]
+  
+  elasticsearch:
+   container_name: elasticsearch
+   image: docker.elastic.co/elasticsearch/elasticsearch:7.13.0
+   ports:
+    - 9200:9200
+   volumes:
+    - elasticsearch-data:/usr/share/elasticsearch/data
+   environment:
+    - xpack.monitoring.enabled=true
+    - xpack.watcher.enabled=false
+    - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    - discovery.type=single-node
+   networks:
+    - app-tier
+
+  kibana:
+   container_name: kibana
+   image: docker.elastic.co/kibana/kibana:7.13.0
+   ports:
+    - 5601:5601
+   depends_on:
+    - elasticsearch
+   environment:
+    - ELASTICSEARCH_URL=http://localhost:9200
+    - xpack.apm.enabled=false
+   networks:
+    - app-tier
   
   accouting:
-    image: xnxn/service:latest
+    image: xnxn/sso-service:latest
+    depends_on:
+     - apm-server
     ports:
       - "8181:8181"
     networks:

@@ -3,14 +3,15 @@ package models
 import (
 	"database/sql"
 
-	_ "github.com/mattn/go-sqlite3"
+	"go.elastic.co/apm/module/apmsql"
+	_ "go.elastic.co/apm/module/apmsql/sqlite3"
 )
 
 var Db *sql.DB
 
 func init() {
 	var err error
-	Db, err = sql.Open("sqlite3", "./sso.db")
+	Db, err = apmsql.Open("sqlite3", "./sso.db")
 	if err != nil {
 		panic(err)
 	}

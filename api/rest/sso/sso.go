@@ -45,7 +45,7 @@ func (f *eventServiceHandler) RegistrationHandler(w http.ResponseWriter, r *http
 		return
 	}
 
-	err = f.service.RegistrationService(user)
+	err = f.service.RegistrationService(r.Context(), user)
 
 	if err != nil {
 		serializer.JSON(w, http.StatusBadRequest, &serializer.GenericResponse{
@@ -98,7 +98,7 @@ func (f *eventServiceHandler) LoginHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	token, err := f.service.AuthService(user)
+	token, err := f.service.AuthService(r.Context(), user)
 
 	if err != nil {
 		serializer.JSON(w, http.StatusBadRequest, &serializer.GenericResponse{

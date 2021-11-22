@@ -8,6 +8,7 @@ import (
 	_ "github.com/mernat/sso-clean-arch/docs"
 	"github.com/mernat/sso-clean-arch/models"
 	ssoUseCase "github.com/mernat/sso-clean-arch/usecase/sso"
+	"go.elastic.co/apm/module/apmgorilla"
 
 	"github.com/gorilla/mux"
 
@@ -49,6 +50,7 @@ func ServeAPI(endpoint string) error {
 	))
 
 	ssoRouter.Use(middleware.JwtAuth)
+	ssoRouter.Use(apmgorilla.Middleware())
 
 	return http.ListenAndServe(endpoint, r)
 }

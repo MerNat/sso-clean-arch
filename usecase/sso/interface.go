@@ -1,8 +1,12 @@
 package sso
 
-import "github.com/mernat/sso-clean-arch/models"
+import (
+	"context"
+
+	"github.com/mernat/sso-clean-arch/models"
+)
 
 type Service interface {
-	RegistrationService(user *models.User) (err error)
-	AuthService(user *models.User) (token string, err error)
+	RegistrationService(ctx context.Context, user *models.User) (err error)
+	AuthService(ctx context.Context, user *models.User) (token string, err error)
 }

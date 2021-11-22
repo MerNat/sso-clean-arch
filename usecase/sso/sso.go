@@ -1,6 +1,7 @@
 package sso
 
 import (
+	"context"
 	"errors"
 	"time"
 
@@ -21,20 +22,20 @@ func NewService(repo models.Repository) Service {
 	}
 }
 
-func (s *serviceLayer) RegistrationService(user *models.User) (err error) {
+func (s *serviceLayer) RegistrationService(ctx context.Context, user *models.User) (err error) {
 
-	err = s.repo.CreateUser(user)
+	err = s.repo.CreateUser(ctx, user)
 	return
 }
 
-func (s *serviceLayer) AuthService(user *models.User) (token string, err error) {
+func (s *serviceLayer) AuthService(ctx context.Context, user *models.User) (token string, err error) {
 	password := user.Password
 	if password == "" {
 		err = errors.New("invalid credentials")
 		return
 	}
 
-	err = s.repo.GetUser(user)
+	err = s.repo.GetUser(ctx, user)
 
 	if err != nil {
 		err = errors.New("email not found")

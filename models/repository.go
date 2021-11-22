@@ -1,6 +1,8 @@
 package models
 
+import "context"
+
 type Repository interface {
-	CreateUser(user *User) (err error)
-	GetUser(user *User) (err error)
+	CreateUser(ctx context.Context, user *User) (err error)
+	GetUser(ctx context.Context, user *User) (err error)
 }

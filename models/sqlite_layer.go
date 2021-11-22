@@ -1,10 +1,11 @@
 package models
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 
-	"github.com/mattn/go-sqlite3"
+	s3 "github.com/mattn/go-sqlite3"
 	"github.com/mernat/sso-clean-arch/utils"
 )
 
@@ -18,52 +19,37 @@ func NewSQLiteRepository() Repository {
 	}
 }
 
-func (r *repo) CreateUser(user *User) (err error) {
-	stmt, err := r.db.Prepare("INSERT INTO users(name, email, password) values(?,?,?)")
+func (r *repo) CreateUser(ctx context.Context, user *User) (err error) {
+	tx, err := r.db.BeginTx(ctx, nil)
 	if err != nil {
 		return
 	}
-	_, err = stmt.Exec(user.Name, user.Email, utils.Encrypt(user.Password))
+	stmt, err := tx.PrepareContext(ctx, "INSERT INTO users(name, email, password) values(?,?,?)")
+	if err != nil {
+		return
+	}
+	_, err = stmt.ExecContext(ctx, user.Name, user.Email, utils.Encrypt(user.Password))
 
 	if err != nil {
-		if sqliteErr, ok := err.(sqlite3.Error); ok {
-			if sqliteErr.Code == sqlite3.ErrConstraint {
+		if sqliteErr, ok := err.(s3.Error); ok {
+			if sqliteErr.Code == s3.ErrConstraint {
 				err = errors.New("email already exist")
 			}
 		}
+		return
 	}
-	return
+	return tx.Commit()
 }
 
-// func (user *User) CreateUser() (err error) {
-// 	stmt, err := Db.Prepare("INSERT INTO users(name, email, password) values(?,?,?)")
-// 	if err != nil {
-// 		return
-// 	}
-// 	_, err = stmt.Exec(user.Name, user.Email, utils.Encrypt(user.Password))
-
-// 	if err != nil {
-// 		if sqliteErr, ok := err.(sqlite3.Error); ok {
-// 			if sqliteErr.Code == sqlite3.ErrConstraint {
-// 				err = errors.New("email already exist")
-// 			}
-// 		}
-// 	}
-// 	return
-// }
-
-func (r *repo) GetUser(user *User) (err error) {
-	err = r.db.QueryRow("select name, password from users where email=$1", user.Email).Scan(&user.Name, &user.Password)
+func (r *repo) GetUser(ctx context.Context, user *User) (err error) {
+	tx, err := r.db.BeginTx(ctx, nil)
+	if err != nil {
+		return
+	}
+	err = tx.QueryRowContext(ctx, "select name, password from users where email=$1", user.Email).Scan(&user.Name, &user.Password)
 	if err != nil {
 		err = errors.New("email Not Found")
+		return
 	}
-	return
+	return tx.Commit()
 }
-
-// func (user *User) GetUser() (err error) {
-// 	err = Db.QueryRow("select name, password from users where email=$1", user.Email).Scan(&user.Name, &user.Password)
-// 	if err != nil {
-// 		err = errors.New("email Not Found")
-// 	}
-// 	return
-// }

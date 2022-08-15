@@ -7,6 +7,7 @@ import (
 
 	"github.com/mernat/sso-clean-arch/config"
 	"github.com/mernat/sso-clean-arch/models"
+	"github.com/mernat/sso-clean-arch/utils"
 	"github.com/square/go-jose/v3"
 	"github.com/square/go-jose/v3/jwt"
 	"golang.org/x/crypto/bcrypt"
@@ -23,7 +24,19 @@ func NewService(repo models.Repository) Service {
 }
 
 func (s *serviceLayer) RegistrationService(ctx context.Context, user *models.User) (err error) {
-
+	//Validate user name and email
+	if !utils.IsEmailValid(user.Email){
+		err = errors.New("email not valid")
+		return
+	}
+	if !utils.IsUsernameValid(user.Name){
+		err = errors.New("username not valid")
+		return 
+	}
+	if !utils.IsPasswordValid(user.Password){
+		err = errors.New("password not valid")
+		return 
+	}
 	err = s.repo.CreateUser(ctx, user)
 	return
 }

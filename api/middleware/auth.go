@@ -18,6 +18,10 @@ var JwtAuth = func(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		currentURL := r.URL.Path
 
+		if strings.Contains(currentURL, "/sso/stream") {
+			next.ServeHTTP(w, r)
+		}
+
 		isSwagger, _ := regexp.MatchString("/docs*", currentURL)
 		if isSwagger {
 			next.ServeHTTP(w, r)
@@ -35,6 +39,7 @@ var JwtAuth = func(next http.Handler) http.Handler {
 			"/sso/register",
 			"/sso/login",
 			"/sso/jwks",
+			"/sso/broadcast",
 		}
 
 		for _, value := range rejectURL {

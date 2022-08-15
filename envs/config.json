@@ -1,4 +1,4 @@
 {
   "restfulapi_endpoint": "0.0.0.0:8181",
-  "environment": "STAGING"
+  "environment": "DEV"
 }

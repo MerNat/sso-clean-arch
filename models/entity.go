@@ -16,3 +16,24 @@ type User struct {
 	Email    string `json:"email,omitempty"`
 	Password string `json:"password,omitempty"`
 }
+
+type Broker struct {
+
+	/*
+	Events are pushed to this channel by the main events-gathering routine
+	*/
+	Notifier chan []byte
+
+	// New client connections
+	NewClients chan chan []byte
+
+	// Closed client connections
+	ClosingClients chan chan []byte
+
+	// Client connections registry
+	Clients map[chan []byte]bool
+}
+
+type MessageBroker struct {
+	Message *string `json:"message"`
+}

@@ -7,6 +7,7 @@ import (
 
 	s3 "github.com/mattn/go-sqlite3"
 	"github.com/mernat/sso-clean-arch/utils"
+	"go.elastic.co/apm"
 )
 
 type repo struct {
@@ -20,6 +21,8 @@ func NewSQLiteRepository() Repository {
 }
 
 func (r *repo) CreateUser(ctx context.Context, user *User) (err error) {
+	span, ctx := apm.StartSpan(ctx, "CreatingUser", "custom")
+	defer span.End()
 	tx, err := r.db.BeginTx(ctx, nil)
 	if err != nil {
 		return
@@ -42,6 +45,8 @@ func (r *repo) CreateUser(ctx context.Context, user *User) (err error) {
 }
 
 func (r *repo) GetUser(ctx context.Context, user *User) (err error) {
+	span, ctx := apm.StartSpan(ctx, "GetUser", "custom")
+	defer span.End()
 	tx, err := r.db.BeginTx(ctx, nil)
 	if err != nil {
 		return

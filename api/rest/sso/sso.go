@@ -33,8 +33,12 @@ func NewSSOServiceHandler(s ssoUseCase.Service) *eventServiceHandler {
 func (f *eventServiceHandler) RegistrationHandler(w http.ResponseWriter, r *http.Request) {
 	user := &models.User{}
 	err := json.NewDecoder(r.Body).Decode(&user)
-
 	defer r.Body.Close()
+
+	logger := config.GetLoggerFromContext(r.Context())
+
+	logger.Info("handling request")
+	logger.Error("handling error")
 
 	if err != nil {
 		serializer.JSON(w, http.StatusBadRequest, &serializer.GenericResponse{

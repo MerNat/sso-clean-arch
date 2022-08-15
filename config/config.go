@@ -15,17 +15,17 @@ var (
 )
 
 type ServiceConfig struct {
-	JwtSecret       string `json:"jwt_secret"`
-	RestfulEndpoint string `json:"restfulapi_endpoint"`
+	RestfulEndpoint *string `json:"restfulapi_endpoint"`
 	JWKS            *jose.JSONWebKeySet
 	PrivateKey      *rsa.PrivateKey
+	Name            *string
+	Version         *string
+	Environment     *string
+	Development     *bool
 }
 
-func ExtractConfiguration(filename string) (ServiceConfig, error) {
-	Config = ServiceConfig{
-		JwtSecret:       "",
-		RestfulEndpoint: "",
-	}
+func InitConfiguration(filename string) (*ServiceConfig, error) {
+	Config = ServiceConfig{}
 
 	file, err := os.Open(filename)
 	if err != nil {
@@ -45,6 +45,5 @@ func ExtractConfiguration(filename string) (ServiceConfig, error) {
 	jwk := utils.NewJSONWebKey(&Config.PrivateKey.PublicKey)
 
 	Config.JWKS = &jose.JSONWebKeySet{Keys: []jose.JSONWebKey{*jwk}}
-
-	return Config, nil
+	return &Config, nil
 }

@@ -1,6 +1,8 @@
 package models
 
-import "log"
+import (
+	"log"
+)
 
 type brokerRepository struct {
 	dbBroker *Broker

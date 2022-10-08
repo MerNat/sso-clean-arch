@@ -1,3 +1,4 @@
 .git
 filebeat.docker.yaml
 .idea
+ignoreEnvs

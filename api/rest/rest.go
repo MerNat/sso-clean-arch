@@ -37,6 +37,8 @@ func ServeAPI(endpoint string) error {
 	ssoRepo := models.NewSQLiteRepository()
 	sseRepo := models.NewBrokerRepository()
 	sseUseCase := sseUseCase.NewBrokerService(sseRepo)
+	//Start messaging here.
+	models.NewMessagingRepository()
 
 	ssoService := ssoUseCase.NewService(ssoRepo)
 	ssoHandler := sso.NewSSOServiceHandler(ssoService)

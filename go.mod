@@ -7,6 +7,7 @@ require (
 	github.com/golang/mock v1.6.0
 	github.com/gorilla/mux v1.8.0
 	github.com/mattn/go-sqlite3 v1.14.9
+	github.com/rabbitmq/amqp091-go v1.4.0
 	github.com/square/go-jose/v3 v3.0.0-20200630053402-0a67ce9b0693
 	github.com/stretchr/testify v1.7.0
 	github.com/swaggo/http-swagger v1.1.2
@@ -15,7 +16,6 @@ require (
 	go.elastic.co/apm/module/apmgorilla v1.14.0
 	go.elastic.co/apm/module/apmsql v1.14.0
 	go.elastic.co/apm/module/apmzap v1.15.0
-	go.elastic.co/ecszap v1.0.0
 	go.uber.org/zap v1.20.0
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 )
@@ -36,7 +36,6 @@ require (
 	github.com/jcchavezs/porto v0.1.0 // indirect
 	github.com/joeshaw/multierror v0.0.0-20140124173710-69b34d4ec901 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
-	github.com/magefile/mage v1.9.0 // indirect
 	github.com/mailru/easyjson v0.7.6 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect

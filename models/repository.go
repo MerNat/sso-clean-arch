@@ -11,3 +11,7 @@ type BrokerRepo interface {
 	Listen()
 	GetBroker() *Broker
 }
+
+type MessagingRepo interface{
+	ListenAndSend()
+}

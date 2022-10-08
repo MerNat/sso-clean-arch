@@ -11,72 +11,74 @@ volumes:
     driver: local
 
 services:
-  apm-server:
-   container_name: apm-server
-   image: docker.elastic.co/apm/apm-server:7.17.0
-   ports:
-    - 8200:8200
-   depends_on:
-     - elasticsearch
-     - kibana
-   networks:
-    - app-tier 
-   command: >
-     apm-server -e
-       -E apm-server.rum.enabled=true
-       -E setup.kibana.host=kibana:5601
-       -E setup.template.settings.index.number_of_replicas=0
-       -E apm-server.kibana.enabled=true
-       -E apm-server.kibana.host=kibana:5601
-       -E output.elasticsearch.hosts=["elasticsearch:9200"]
+  # apm-server:
+  #  container_name: apm-server
+  #  image: docker.elastic.co/apm/apm-server:7.17.0
+  #  ports:
+  #   - 8200:8200
+  #  depends_on:
+  #    - elasticsearch
+  #    - kibana
+  #  networks:
+  #   - app-tier 
+  #  command: >
+  #    apm-server -e
+  #      -E apm-server.rum.enabled=true
+  #      -E setup.kibana.host=kibana:5601
+  #      -E setup.template.settings.index.number_of_replicas=0
+  #      -E apm-server.kibana.enabled=true
+  #      -E apm-server.kibana.host=kibana:5601
+  #      -E output.elasticsearch.hosts=["elasticsearch:9200"]
   
-  elasticsearch:
-   container_name: elasticsearch
-   image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
-   ports:
-    - 9200:9200
-   volumes:
-    - elasticsearch-data:/usr/share/elasticsearch/data
-    - certs:/usr/share/elasticsearch/config/certificates
-   environment:
-    - xpack.monitoring.enabled=true
-    - xpack.watcher.enabled=false
-    - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    - discovery.type=single-node
-    - xpack.license.self_generated.type=trial
-   networks:
-    - app-tier
+  # elasticsearch:
+  #  container_name: elasticsearch
+  #  image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
+  #  ports:
+  #   - 9200:9200
+  #  volumes:
+  #   - elasticsearch-data:/usr/share/elasticsearch/data
+  #   - certs:/usr/share/elasticsearch/config/certificates
+  #  environment:
+  #   - xpack.monitoring.enabled=true
+  #   - xpack.watcher.enabled=false
+  #   - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #   - discovery.type=single-node
+  #   - xpack.license.self_generated.type=trial
+  #  networks:
+  #   - app-tier
 
-  filebeat:
-   container_name: filebeat
-   image: docker.elastic.co/beats/filebeat:7.17.0
-   user: root
-   command: filebeat -e -strict.perms=false
-   depends_on:
-    - kibana
-    - elasticsearch
-   volumes:
-    - ${PWD}/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro
-    - /var/lib/docker/containers:/var/lib/docker/containers:ro
-    - /var/run/docker.sock:/var/run/docker.sock:ro
-   environment:
-    - setup.kibana.host=kibana:5601
-   networks:
-    - app-tier
+  # filebeat:
+  #  container_name: filebeat
+  #  image: docker.elastic.co/beats/filebeat:7.17.0
+  #  user: root
+  #  command: filebeat -e -strict.perms=false
+  #  depends_on:
+  #   - kibana
+  #   - elasticsearch
+  #  volumes:
+  #   - ${PWD}/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro
+  #   - /var/lib/docker/containers:/var/lib/docker/containers:ro
+  #   - /var/run/docker.sock:/var/run/docker.sock:ro
+  #  environment:
+  #   - setup.kibana.host=kibana:5601
+  #  networks:
+  #   - app-tier
 
-  kibana:
-   container_name: kibana
-   image: docker.elastic.co/kibana/kibana:7.17.0
-   ports:
-    - 5601:5601
-   depends_on:
-    - elasticsearch
-   environment:
-    - ELASTICSEARCH_URL=http://elasticsearch:9200
-    - xpack.apm.enabled=false
-    - XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY="1c1b4efe-912c-48a4-a137-06f7649fe7d2"
-   networks:
-    - app-tier
+  # kibana:
+  #  container_name: kibana
+  #  image: docker.elastic.co/kibana/kibana:7.17.0
+  #  ports:
+  #   - 5601:5601
+  #  depends_on:
+  #   - elasticsearch
+  #  environment:
+  #   - ELASTICSEARCH_URL=http://elasticsearch:9200
+  #   - xpack.apm.enabled=false
+  #   - XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY="1c1b4efe-912c-48a4-a137-06f7649fe7d2"
+  #  networks:
+  #   - app-tier
+
+
   # accouting:
   #   image: xnxn/sso-service:latest
   #   labels:
@@ -91,3 +93,10 @@ services:
   #     - "8181:8181"
   #   networks:
   #     - app-tier
+  rabbit:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - 5672:5672
+      - 8081:15672
+    networks:
+    - app-tier

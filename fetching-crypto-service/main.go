@@ -120,7 +120,7 @@ func requestAndSend(ch *amqp.Channel, ctx context.Context, quitProcess chan bool
 			log.Printf("Data sent -> %d times\n", counter)
 			resp.Body.Close()
 
-			time.Sleep(3 * time.Second)
+			time.Sleep(1 * time.Second)
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package models
 
 import (
+	"encoding/json"
 	"log"
 
 	amqp "github.com/rabbitmq/amqp091-go"
@@ -87,7 +88,12 @@ func (mRepo *messagingRepository) ListenAndSend() {
 
 	go func() {
 		for d := range msgs {
-			mRepo.broker.Notifier <- d.Body
+			var coinApi CointAPI
+			if err := json.Unmarshal(d.Body, &coinApi); err != nil {
+				log.Fatal(err.Error())
+			}
+			byteData, _ := json.Marshal(coinApi)
+			mRepo.broker.Notifier <- byteData
 			log.Printf("Sending cryto info to client(s)")
 		}
 	}()

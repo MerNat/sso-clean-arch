@@ -20,7 +20,7 @@ type User struct {
 type Broker struct {
 
 	/*
-	Events are pushed to this channel by the main events-gathering routine
+		Events are pushed to this channel by the main events-gathering routine
 	*/
 	Notifier chan []byte
 
@@ -36,4 +36,11 @@ type Broker struct {
 
 type MessageBroker struct {
 	Message *string `json:"message"`
+}
+
+type CointAPI struct {
+	Time         *string  `json:"time"`
+	AssetIDBase  *string  `json:"asset_id_base"`
+	AssetIDQuote *string  `json:"asset_id_quote"`
+	Rate         *float64 `json:"rate"`
 }
